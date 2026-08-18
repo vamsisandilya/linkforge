@@ -8,6 +8,12 @@ SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "dev-insecure-key-change-me")
 DEBUG = os.environ.get("DJANGO_DEBUG", "1") == "1"
 ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "*").split(",")
 
+# Railway (and most PaaS hosts) terminate TLS at the edge and forward plain HTTP to
+# the container, so Django needs to trust X-Forwarded-Proto to know the original
+# request was HTTPS — otherwise build_absolute_uri() (used for short_url) returns
+# http:// links on an https-only deployment.
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
 # Under pytest we default to fast, dependency-free services (SQLite, local cache,
 # eager Celery, fake Redis). CI can set USE_REAL_SERVICES=1 to exercise the real
 # Postgres + Redis stack instead.
