@@ -6,6 +6,8 @@ the request path, and link creation is protected by a sliding-window rate limite
 
 **Stack:** Django · DRF · PostgreSQL · Redis · Celery · Docker · GitHub Actions
 
+**Live:** [web-production-c5394.up.railway.app](https://web-production-c5394.up.railway.app)
+
 ## Running it
 
 ```bash
