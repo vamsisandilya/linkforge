@@ -1,7 +1,10 @@
+from datetime import timedelta
+
 from django.conf import settings
 from django.db.models import Count
 from django.db.models.functions import TruncDate
 from django.shortcuts import redirect
+from django.utils import timezone
 from rest_framework import mixins, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -38,6 +41,10 @@ class LinkViewSet(
     def stats(self, request, code=None):
         link = self.get_object()
         clicks = link.clicks
+        days = request.query_params.get("days")
+        if days is not None:
+            since = timezone.now() - timedelta(days=int(days))
+            clicks = clicks.filter(created_at__gte=since)
         by_day = list(
             clicks.annotate(day=TruncDate("created_at"))
             .values("day")
